@@ -1,0 +1,70 @@
+{
+    "accountType": "Partner",
+    "brandGuidelines": {
+        "guidelines": [
+            
+        ],
+        "marketingMaterials": [
+            
+        ],
+        "preferredPromotionChannels": "Print Media, Social Media"
+    },
+    "brn": "BRN987654412",
+    "businessOverview": {
+        "customerDemographics": "B2C",
+        "operationLocation": "Local",
+        "sector": "Environmental Services",
+        "serviceDescription": "Offering sustainable and eco-friendly services to households"
+    },
+    "companyAddress": "456 Eco Road, Green City, GC 78910",
+    "companyContactPerson": {
+        "emailAddress": "akintobby@gmail.com",
+        "fullName": "David Green",
+        "phoneNumber": "23456789012",
+        "position": "Managing Director"
+    },
+    "companyName": "Solid Star Initiatives Inc",
+    "createdAt": "2024-08-27T05:17:06.115Z",
+    "email": "akintobby@gmail.com",
+    "financialInformation": {
+        "accountName": "Green Solutions Inc",
+        "accountNumber": 9876543210,
+        "bankName": "Green Bank",
+        "preferredPaymentTime": "quarterly"
+    },
+    "id": "8481322c-425d-494f-bcd5-5e06b8028ac5",
+    "isAccountActive": true,
+    "isLoggedIn": true,
+    "isVerified": true,
+    "loginAttempts": 0,
+    "loyaltyProgram": {
+        "haveLoyaltyProgram": true,
+        "memberBaseSize": "3000",
+        "preferDifferentStructure": true,
+        "preferredRewardedActivities": "Purchases, Recycling Participation",
+        "preferredRewardsOffer": false,
+        "preferredRewardsTiers": "Platinum, Gold, Silver",
+        "programStructure": "Points-based",
+        "rewardOffered": "Vouchers, Free Products"
+    },
+    "marketingAndPromotion": {
+        "contactName": "Fiona Blue",
+        "emailAddress": "fiona.blue@greensolutions.com",
+        "phoneNumber": "23423423422"
+    },
+    "notification": null,
+    "passwordType": "UNIQUE",
+    "plans": "Basic",
+    "points": null,
+    "privilege": "Standard",
+    "technicalDetails": {
+        "ITContactName": "Eva White",
+        "ecommercePlatform": "Shopify",
+        "emailAddress": "eva.white@greensolutions.com",
+        "integrationCapacities": "API",
+        "phoneNumber": "21098765432",
+        "typeOfPOS": "Standard"
+    },
+    "updatedAt": "2024-09-26T17:59:12.598Z",
+    "websiteUrl": "https://www.greensolutions.com"
+}

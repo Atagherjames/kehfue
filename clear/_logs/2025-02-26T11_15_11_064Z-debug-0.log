@@ -1,0 +1,26 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@10.8.2
+2 info using node@v20.17.0
+3 silly config load:file:C:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config load:file:C:\Users\ADMIN\Desktop\My Projects\KhefueMobile\.npmrc
+5 silly config load:file:C:\Users\ADMIN\.npmrc
+6 silly config load:file:C:\Users\ADMIN\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm start
+8 verbose argv "start" "--cache" "clear"
+9 verbose logfile logs-max:10 dir:C:\Users\ADMIN\Desktop\My Projects\KhefueMobile\clear\_logs\2025-02-26T11_15_11_064Z-
+10 verbose logfile C:\Users\ADMIN\Desktop\My Projects\KhefueMobile\clear\_logs\2025-02-26T11_15_11_064Z-debug-0.log
+11 silly logfile done cleaning log files
+12 http fetch GET https://registry.npmjs.org/npm attempt 1 failed with ENOTFOUND
+13 http fetch GET https://registry.npmjs.org/npm attempt 2 failed with ENOTFOUND
+14 http fetch GET 200 https://registry.npmjs.org/npm 80790ms attempt #3
+15 verbose cwd C:\Users\ADMIN\Desktop\My Projects\KhefueMobile
+16 verbose os Windows_NT 10.0.22621
+17 verbose node v20.17.0
+18 verbose npm  v10.8.2
+19 notice
+19 notice New [31mmajor[39m version of npm available! [31m10.8.2[39m -> [34m11.1.0[39m
+19 notice Changelog: [34mhttps://github.com/npm/cli/releases/tag/v11.1.0[39m
+19 notice To update run: [4mnpm install -g npm@11.1.0[24m
+19 notice  { force: true, [Symbol(proc-log.meta)]: true }
+20 verbose exit 0
+21 info ok
