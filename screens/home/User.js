@@ -14,12 +14,14 @@ import userBg from "../../assets/images/user-bg.png";
 import person from "../../assets/images/person.png";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useRecoilState } from "recoil";
-import { AccessToken, UserData } from "../../recoil/UserData";
+import { AccessToken, UserData , PartnerAccessToken} from "../../recoil/UserData";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import BackButton from "../../components/BackButton";
 import AppButton from "../../components/AppButton";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const DetailsItem = ({ icon, title, value }) => (
+
+  
   <View
     style={{
       paddingBottom: 10,
@@ -195,7 +197,14 @@ const User = ({ navigation }) => {
               />
             </View>
 
-            <AppButton btnText={"Logout"} onPress={() => setToken("")} />
+<AppButton 
+  btnText={"Logout"} 
+  onPress={async () => {
+    await AsyncStorage.multiRemove(["accessToken", "partnerAccessToken", "userData"]);
+    setToken("");
+  }} 
+/>
+
           </View>
         </KeyboardAwareScrollView>
       </View>

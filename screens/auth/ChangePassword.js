@@ -10,6 +10,7 @@ import { useChangePasswordMutation } from "../../services/routes/authRoute";
 import { useToast } from "react-native-toast-notifications";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import AppLoader from "../../components/AppLoader";
+import { encryptPassword } from "../../utils/Utilities";
 
 const ChangePassword = ({ navigation, route }) => {
   const [newPassword, setNewPassword] = useState("");
@@ -27,9 +28,15 @@ const ChangePassword = ({ navigation, route }) => {
       });
       return;
     }
+
+     const encryptedPassword = encryptPassword(newPassword)
+    
+    
+
+
     const payload = {
       email,
-      password: newPassword,
+      password: encryptedPassword,
       otpCode: otp,
     };
 

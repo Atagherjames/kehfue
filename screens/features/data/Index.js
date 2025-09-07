@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View, FlatList } from "react-native";
 import { useRecoilState } from "recoil";
 import { AccessToken, UserData } from "../../../recoil/UserData";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -30,7 +30,7 @@ const Data = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const [showPlanModal, setShowPlanModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [filteredPlans, seteFilteredPans] = useState([]);
+  const [filteredPlans, setFilteredPans] = useState([]);
   const [points, setPoints] = useState(0);
   const [activeType, setActiveType] = useState(0);
 
@@ -45,15 +45,21 @@ const Data = ({ navigation }) => {
 
   const handlePurchase = async () => {
     const result = await newPurchaseData({ token, number: phone });
-    if (result?.data?.success) {
-      const plans = result.data.data;
-      seteFilteredPans(plans);
+    console.log(result);
 
-      const productId = plans[0]?.productId?.toLowerCase();
-      if (productId.includes("mtn")) setNetwork("MTN");
-      else if (productId.includes("air")) setNetwork("AIRTEL");
-      else if (productId.includes("glo")) setNetwork("GLO");
-      else if (productId.includes("9mo")) setNetwork("9Mobile");
+    if (result?.data?.success) {
+      const plans = result.data.data.data;
+      console.log("this is the plan", plans);
+      if (Array.isArray(plans)) {
+        setFilteredPans(plans);
+        const productId = plans[0]?.productId?.toLowerCase();
+        if (productId.includes("mtn")) setNetwork("MTN");
+        else if (productId.includes("air")) setNetwork("AIRTEL");
+        else if (productId.includes("glo")) setNetwork("GLO");
+        else if (productId.includes("9mo")) setNetwork("9Mobile");
+      } else {
+        setFilteredPans([]);
+      }
     }
   };
 
@@ -63,7 +69,7 @@ const Data = ({ navigation }) => {
     } else if (phone.length < 11) {
       setPlan(null);
       setNetwork("");
-      seteFilteredPans([]);
+      setFilteredPans([]);
     }
   }, [phone]);
 
@@ -86,6 +92,7 @@ const Data = ({ navigation }) => {
 
     try {
       const res = await purchaseData({ token, body }).unwrap();
+      console.log(res)
       if (res?.success) {
         navigation.navigate("DataReviewOrder", { data: res?.order });
       } else {
@@ -222,40 +229,42 @@ const Data = ({ navigation }) => {
         </View>
       </AppModal>
 
-      {/* Plan Modal */}
+      {/* Plan Modal - Now using FlatList for better performance and unique keys */}
       <AppModal
         modalStyles={{ maxHeight: "80%" }}
         visible={showPlanModal}
         onClose={() => setShowPlanModal(false)}
         backdropStyles={{ alignItems: "center" }}
       >
-        <ScrollView>
-          <View style={{ gap: 10 }}>
+        <FlatList
+          data={filteredPlans}
+          keyExtractor={(item, index) => `${item?.productId}-${index}`}
+          ListHeaderComponent={
             <Text
               style={{
                 fontSize: 18,
                 fontFamily: "Bold",
                 textAlign: "center",
+                marginBottom: 10,
               }}
             >
               Select Plan Type
             </Text>
-            {filteredPlans.map((item, i) => (
-              <TouchableOpacity
-                onPress={() => {
-                  setShowPlanModal(false);
-                  setPlan(item);
-                }}
-                key={i}
-                style={{ paddingVertical: 3 }}
-              >
-                <Text style={{ fontFamily: "Medium", fontSize: 18 }}>
-                  {item?.dataBundle} - ₦{item?.amount} - {item?.validity}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </ScrollView>
+          }
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => {
+                setShowPlanModal(false);
+                setPlan(item);
+              }}
+              style={{ paddingVertical: 3 }}
+            >
+              <Text style={{ fontFamily: "Medium", fontSize: 18 }}>
+                {item?.dataBundle} - ₦{item?.amount} - {item?.validity}
+              </Text>
+            </TouchableOpacity>
+          )}
+        />
       </AppModal>
 
       <PaymentMethodModal

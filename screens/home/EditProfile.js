@@ -88,8 +88,8 @@ const EditProfile = ({ route }) => {
             uploadType: FileSystem.FileSystemUploadType.MULTIPART,
             fieldName: "thumbNail", // The name of the form field your server expects
             parameters: {
-              firstName: newFirstName?.toString(),
-              lastName: newLastName?.toString(),
+              // firstName: newFirstName?.toString(),
+              // lastName: newLastName?.toString(),
               middleName: newMiddleName?.toString(),
               phoneNumber: newPhone?.toString(),
               gender: newGender?.toString(),
@@ -124,9 +124,9 @@ const EditProfile = ({ route }) => {
         }
       } else {
         const body = {
-          firstName: newFirstName,
-          lastName: newLastName,
-          middleName: newMiddleName,
+          // firstName: newFirstName,
+          // lastName: newLastName,
+          // middleName: newMiddleName,
           gender: newGender,
           dob: date.toDateString(),
           phoneNumber: newPhone,
@@ -140,12 +140,11 @@ const EditProfile = ({ route }) => {
             token,
             body,
           }).unwrap();
-          console.log(updateRes);
           if (updateRes.success || updateRes?.data?.success) {
             toast.show(
               updateRes.message ||
                 updateRes?.data?.message ||
-                "Offer Updated Successfully",
+                "Profile Updated Successfully",
               {
                 type: "success",
               }

@@ -13,6 +13,8 @@ import AppLoader from "../../components/AppLoader";
 import { useRecoilState } from "recoil";
 import { PartnerAccessToken, UserData } from "../../recoil/UserData";
 import { useToast } from "react-native-toast-notifications";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { encryptPassword } from "../../utils/Utilities";
 
 const PartnerLogin = () => {
   const navigation = useNavigation();
@@ -24,7 +26,7 @@ const PartnerLogin = () => {
   const [userData, setUserData] = useRecoilState(UserData);
   const [accessToken, setAccessToken] = useRecoilState(PartnerAccessToken);
   const toast = useToast();
-  const url = "https://khefuefrontend.azurewebsites.net/partner-enlist";
+  const url = "https://khefue.com/business-opportunity";
 
   const openUrl = async () => {
     try {
@@ -39,14 +41,23 @@ const PartnerLogin = () => {
       Alert.alert("Please fill in all fields to continue");
       return;
     }
+     const encryptedPassword = encryptPassword(password)
+    
+    
+        const payload = {
+          email,
+          password: encryptedPassword,
+        };
 
-    const payload = { email, password };
+
     try {
       const loginResult = await loginPartner(payload).unwrap();
 
       if (loginResult.success) {
         setUserData(loginResult.partner);
         setAccessToken(loginResult.accessToken);
+         await AsyncStorage.setItem("userData", JSON.stringify(loginResult.partner));
+      await AsyncStorage.setItem("partnerAccessToken", loginResult.accessToken);
 
         if (loginResult.partner.isVerified) {
           if (!loginResult.partner.hasStore) {

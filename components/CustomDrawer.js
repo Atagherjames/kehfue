@@ -19,7 +19,8 @@ import Entypo from "@expo/vector-icons/Entypo";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useRecoilState, useRecoilValue } from "recoil";
 import LoggedIn from "../recoil/LoggedIn";
-import { PartnerAccessToken, UserData } from "../recoil/UserData";
+import { PartnerAccessToken, UserData, AccessToken} from "../recoil/UserData";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width, height } = Dimensions.get("window");
 
@@ -76,7 +77,6 @@ const CustomDrawer = () => {
     }
   };
 
-  // Handles press for protected screens
   const handleNavigation = (screen) => {
     toggleDrawer();
     if (hasStore) {
@@ -252,7 +252,11 @@ const CustomDrawer = () => {
           <RenderItem
             iconComp={<MaterialIcons name="logout" size={24} color="red" />}
             text={"Log Out"}
-            onPress={() => setToken("")}
+
+            
+            onPress={async () =>{
+                await AsyncStorage.multiRemove(["accessToken", "partnerAccessToken", "userData"])
+              setToken("")}}  
           />
         </ScrollView>
       </Animated.View>

@@ -18,6 +18,7 @@ import { useGetOffersQuery } from "../../services/routes/offersRoute";
 import OffersState from "../../recoil/Offers";
 import { useDispatch } from "react-redux";
 import { apiSlice } from "../../services/apiSlice";
+import { Image } from "react-native";
 
 const Dashboard = () => {
   const navigation = useNavigation();
@@ -54,6 +55,15 @@ const Dashboard = () => {
     dispatch(apiSlice.util.invalidateTags(["user", "offers", "product"]));
   };
 
+  const quickLinksData = [
+  { id: '1', title: 'MTN', icon: require('../../assets/quickLinks/mtn.png'), screen: 'Airtime'},
+  { id: '2', title: 'Flight', icon: require('../../assets/quickLinks/flight.png'), screen:'ComingSoon'},
+  { id: '3', title: 'GLO', icon: require('../../assets/quickLinks/glo.png'), screen: 'Airtime'},
+  { id: '4', title: 'DSTV', icon: require('../../assets/quickLinks/dstv.png'), screen:'SubscriptionMain'},
+  { id: '5', title: 'Showmax', icon: require('../../assets/quickLinks/showmax.png'), screen:'ComingSoon' },
+  { id: '6', title: 'spar giftcard', icon: require('../../assets/quickLinks/giftcard.png'), screen: 'GiftCardStack' },
+];
+
   const loadCardOffers = offersData?.filter(
     (item) => item.type === "Load Card"
   );
@@ -79,70 +89,135 @@ const Dashboard = () => {
           {/* User Card */}
           <TouchableOpacity
             style={{
-              height: 165,
-              paddingHorizontal: 20,
-              alignItems: "center",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              backgroundColor: Colors.primary,
+              padding: 20,
+              backgroundColor: 'rgb(51, 0, 102)',
               borderRadius: 14,
-              gap: 20,
               marginHorizontal: 20,
+              justifyContent: 'space-between',
+              marginBottom: 20,
             }}
             onPress={() => navigation.navigate("Cards")}
           >
+            {/* Top Section: Welcome and Premium tag */}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <View style={{ flex: 1 }}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: 'white',
+                    fontFamily: "Medium",
+                  }}
+                >
+                  Hello {userData?.firstName}, today will be a good day !!
+                </Text>
+              </View>
+              {/* Premium Badge */}
+              <View
+                style={{
+                  borderRadius: 12,
+                  paddingHorizontal: 8,
+                  paddingVertical: 4,
+                  borderWidth: 1,
+                  borderColor: '#CAA928',
+                  marginLeft: 10,
+                  overflow: 'hidden',
+                }}
+              >
+                <Text style={{ color: '#CAA928', fontSize: 10, fontFamily: "Medium" }}>
+                  Premium
+                </Text>
+              </View>
+            </View>
+            {/* Middle Section: Points */}
             <View>
               <Text
                 style={{
-                  fontSize: 14,
-                  color: Colors.white,
-                  fontFamily: "Medium",
-                }}
-              >
-                Hello
-              </Text>
-              <Text
-                style={{
-                  fontSize: 18,
-                  color: Colors.white,
-                  fontFamily: "Medium",
-                }}
-              >
-                {userData?.firstName} {userData?.lastName}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: Colors.white,
-                  fontFamily: "Regular",
-                  opacity: 0.5,
-                }}
-              >
-                Today will be a good day !!
-              </Text>
-            </View>
-            <View style={{ flex: 1, alignItems: "center" }}>
-              <Text
-                style={{
-                  fontSize: 24,
-                  color: Colors.white,
-                  fontFamily: "Medium",
-                }}
-              >
-                {userData?.points ?? 0}
-              </Text>
-              <Text
-                style={{
                   fontSize: 12,
-                  color: Colors.white,
+                  color: 'rgba(255, 255, 255, 0.7)',
                   fontFamily: "Medium",
-                  textAlign: "center",
                 }}
               >
                 Total available Point
               </Text>
+              <Text
+                style={{
+                  fontSize: 24,
+                  color: 'white',
+                  fontFamily: "Bold",
+                  marginTop: 5,
+                }}
+              >
+                {userData?.points ?? 0.00}
+              </Text>
+            </View>
+
+             <View style={{ height: 1, backgroundColor: 'rgba(255, 255, 255, 0.2)', marginVertical: 12 }}></View>
+
+            {/* Bottom Section: Tier Progress */}
+            <View>
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: 'white',
+                  fontFamily: "Medium",
+                  marginBottom: 5,
+                }}
+              >
+                Tier progress
+              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                {/* Segmented Progress Bar */}
+                <View style={{ flex: 1, height: 6, backgroundColor: 'white', borderRadius: 3 }} />
+                <View style={{ flex: 1, height: 6, backgroundColor: 'white', borderRadius: 3 }} />
+                <View style={{ flex: 1, height: 6, backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: 3 }} />
+                <View style={{ flex: 1, height: 6, backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: 3 }} />
+              </View>
+              {/* Tier Points */}
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
+                <Text style={{ fontSize: 10, color: 'rgba(255, 255, 255, 0.7)' }}>300</Text>
+                <Text style={{ fontSize: 10, color: 'rgba(255, 255, 255, 0.7)' }}>750</Text>
+                <Text style={{ fontSize: 10, color: '#BBBBBB' }}>1500</Text>
+                <Text style={{ fontSize: 10, color: '#BBBBBB' }}>3000</Text>
+              </View>
             </View>
           </TouchableOpacity>
+
+
+ <View style={{ marginTop: 20, marginHorizontal: 20 }}>
+    {/* Section Header */}
+    <Text style={{ fontSize: 18, fontFamily: "Bold", color: '#000000', marginBottom: 10 }}>
+      Quick Links
+    </Text>
+
+    {/* Quick Links Grid */}
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', gap: 10 }}>
+      {quickLinksData.map((link) => (
+        <TouchableOpacity
+          key={link.id}
+          style={{
+            flexBasis: '30%', 
+            aspectRatio: 1, 
+            backgroundColor: '#F5F5F5',
+            borderRadius: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 10,
+          }}
+          onPress={() => navigation.navigate(link.screen)}
+        >
+          <Image
+            source={link.icon}
+            style={{ width: 40, height: 40, marginBottom: 5 }}
+            resizeMode="contain"
+          />
+          <Text style={{ fontSize: 12, fontFamily: "Medium", textAlign: 'center' }}>
+            {link.title}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  </View>
+
 
           {/* Offers Section */}
           {loadCardOffers?.length > 0 ? (

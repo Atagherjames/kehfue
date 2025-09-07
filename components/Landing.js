@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, Image, Text, View, Alert, Linking } from "react-native";
+import { Dimensions, Image, Text, View, Alert, Linking, ScrollView, TouchableOpacity } from "react-native";
 import { Colors } from "../constants/colors";
 import landingBanner from "../assets/illustrations/landing-banner.png";
 import AppButton from "./AppButton";
@@ -18,6 +18,8 @@ import { useLoadOfferMutation } from "../services/routes/offersRoute";
 import { useRecoilState } from "recoil";
 import { AccessToken } from "../recoil/UserData";
 import { useToast } from "react-native-toast-notifications";
+import Swiper from "react-native-swiper";
+import { useRoute } from "@react-navigation/native";
 
 export const Banner = ({ navigation }) => {
   return (
@@ -49,7 +51,7 @@ export const Banner = ({ navigation }) => {
         }}
       >
         Unlock a world of rewards! From recharging your phone data and shopping
-        to events and travel Join  today and start earning points with every
+        to events and travel Join today and start earning points with every
         purchase
       </Text>
       <AppButton
@@ -209,11 +211,13 @@ export const HowItWorks = () => {
   );
 };
 
-export const Offers = ({ header, offersData, navigation }) => {
+export const Offers = ({ offersData, navigation }) => {
   const [token] = useRecoilState(AccessToken);
   const [loadOffer] = useLoadOfferMutation();
   const [loadingId, setLoadingId] = React.useState(null);
   const toast = useToast();
+  const route = useRoute();
+  const isOffersScreen = route.name === "Offer";
 
   const handleLoadOffer = async (id) => {
     setLoadingId(id);
@@ -249,86 +253,128 @@ export const Offers = ({ header, offersData, navigation }) => {
     }
   };
 
+  const renderOfferItem = (item, i) => (
+    <View
+      style={{
+        gap: 10,
+        padding: 10,
+        elevation: 5,
+        backgroundColor: Colors.white,
+        borderRadius: 14,
+        marginHorizontal: 20,
+        marginBottom: isOffersScreen ? 20 : 0,
+      }}
+      key={i}
+    >
+      <Image
+        source={{ uri: item?.thumbNail?.downloadUrl }}
+        style={{
+          width: "100%",
+          height: 200,
+          borderRadius: 14,
+        }}
+        resizeMode="cover"
+      />
+      <Text
+        style={{
+          fontSize: 18,
+          fontFamily: "Medium",
+        }}
+      >
+        {item?.title}
+      </Text>
+      <Text
+        style={{
+          fontSize: 12,
+          fontFamily: "Medium",
+        }}
+      >
+        {item?.details}
+      </Text>
+      <Text
+        style={{
+          fontSize: 12,
+          fontFamily: "Medium",
+        }}
+      >
+        {item?.duration?.length === 2
+          ? `Expires on ${new Date(item.duration[1]).toDateString()}`
+          : "No expiry date"}
+      </Text>
+      <AppButton
+        btnText={item?.type}
+        onPress={() => {
+          if (item.type === "Shop Now" && item.websiteURL) {
+            handleOpenShop(item.websiteURL);
+          } else {
+            handleLoadOffer(item.id);
+          }
+        }}
+        isLoading={loadingId === item.id}
+      />
+    </View>
+  );
+
   return (
     <View
       style={{
         gap: 30,
         paddingVertical: 30,
-        paddingHorizontal: 20,
         backgroundColor: Colors.White,
       }}
     >
-      <Text
+      <View
         style={{
-          fontSize: 28,
-          fontFamily: "SemiBold",
-          textAlign: "center",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          paddingHorizontal: 20,
         }}
       >
-        {header || "Offers"}
-      </Text>
+        <Text
+          style={{
+            fontSize: isOffersScreen ? 24 : 15,
+            fontFamily: isOffersScreen ? "Medium" : "SemiBold",
+            textAlign: "left",
+          }}
+        >
+          Shop Offers
+        </Text>
+        {!isOffersScreen && (
+          <TouchableOpacity onPress={() => navigation.navigate("Offer")}>
+            <Text
+              style={{
+                fontSize: 15,
+                fontFamily: "Medium",
+                color: Colors.primary,
+              }}
+            >
+              See more
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
 
-      {offersData?.length > 0 &&
-        offersData.map((item, i) => (
-          <View
-            style={{
-              gap: 10,
-              padding: 10,
-              elevation: 5,
-              backgroundColor: Colors.white,
-              borderRadius: 14,
-            }}
-            key={i}
-          >
-            <Image
-              source={{ uri: item?.thumbNail?.downloadUrl }}
-              style={{
-                width: "100%",
-                height: 200,
-                borderRadius: 14,
-              }}
-              resizeMode="cover"
-            />
-            <Text
-              style={{
-                fontSize: 18,
-                fontFamily: "Medium",
-              }}
+      {offersData?.length > 0 && (
+        <>
+          {isOffersScreen ? (
+            <ScrollView showsVerticalScrollIndicator={false}>
+              {offersData.map(renderOfferItem)}
+            </ScrollView>
+          ) : (
+            <Swiper
+              style={{ height: 400 }}
+              showsButtons={false}
+              loop={false}
+              autoplay={false}
+              showsPagination={false}
+              removeClippedSubviews={false}
             >
-              {item?.title}
-            </Text>
-            <Text
-              style={{
-                fontSize: 12,
-                fontFamily: "Medium",
-              }}
-            >
-              {item?.details}
-            </Text>
-            <Text
-              style={{
-                fontSize: 12,
-                fontFamily: "Medium",
-                marginVertical: 10,
-              }}
-            >
-              {item?.duration?.length === 2
-                ? `Expires on ${new Date(item.duration[1]).toDateString()}`
-                : "No expiry date"}
-            </Text>
-            <AppButton
-              btnText={item?.type}
-              onPress={() => {
-                if (item.type === "Shop Now" && item.websiteURL) {
-                  handleOpenShop(item.websiteURL);
-                } else {
-                  handleLoadOffer(item.id);
-                }
-              }}
-              isLoading={loadingId === item.id}
-            />
-          </View>
-        ))}
+              {offersData.map(renderOfferItem)}
+            </Swiper>
+          )}
+        </>
+      )}
     </View>
   );
 };

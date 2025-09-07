@@ -17,6 +17,8 @@ import {
 import AppLoader from "../../components/AppLoader";
 import { useRecoilState } from "recoil";
 import { AccessToken, UserData } from "../../recoil/UserData";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { encryptPassword } from "../../utils/Utilities";
 
 const Login = () => {
   const navigation = useNavigation();
@@ -29,6 +31,7 @@ const Login = () => {
     useGetVerificationCodeMutation();
   const [userData, setUserData] = useRecoilState(UserData);
   const [accessToken, setAccessToken] = useRecoilState(AccessToken);
+
 
   const loginType = [
     {
@@ -48,16 +51,21 @@ const Login = () => {
       Alert.alert("Please fill in all fields to continue");
       return;
     }
+    const encryptedPassword = encryptPassword(password)
+
+
     const payload = {
       email,
-      password,
+      password: encryptedPassword,
     };
     try {
       const loginResult = await loginUser(payload).unwrap();
       if (loginResult.success) {
         setUserData(loginResult?.user);
+          await AsyncStorage.setItem("userData", JSON.stringify(loginResult?.user));
         if (loginResult?.user?.isVerified) {
           setAccessToken(loginResult?.accessToken);
+          await AsyncStorage.setItem("accessToken", loginResult?.accessToken);
         } else {
           try {
             const result = await getCode(loginResult.accessToken).unwrap();

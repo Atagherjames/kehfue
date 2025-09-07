@@ -1,6 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const PRODURL = "https://khefue-backend.azurewebsites.net/khefue/api/v1";
+// export const PRODURL = "https://khefue-server-cne6ece6f6g2fpdc.eastus-01.azurewebsites.net/khefue/api/v1";
+
 export const apiSlice = createApi({
   reducerPath: "apiSlice",
   tagTypes: [

@@ -60,25 +60,53 @@ const Airtime = ({ navigation }) => {
           : "card",
       point: points,
     };
-    // console.log(body)
 
     try {
       const res = await purchaseAirtime({
         token,
         body: activeType != 1 ? body : pointBody,
       }).unwrap();
-      console.log(res);
       if (res?.success) {
-        navigation.navigate("AirtimeReviewOrder", {
-          data: res?.order,
+let orderData = null;
+      if (res?.transaction && res?.planDetails) {
+        orderData = {
+          amount: res?.planDetails?.amount,
+          network: res?.planDetails?.network,
+          phoneNumber: res?.planDetails?.recipient,
+          total: res?.transaction?.txnDetails?.amount,
+          id: res?.transaction?.id,
+          pointsUsed: res?.transaction?.txnDetails?.point,
+          pointsToEarn: res?.transaction?.pointEarned ?? 0, // fallback
+        };
+      }
+
+      // Case 2: card / card_and_points flow (order)
+      else if (res?.order) {
+        orderData = {
+          amount: res?.order?.amount,
+          network: res?.order?.network,
+          phoneNumber: res?.order?.phoneNumber,
+          total: res?.order?.total,
+          id: res?.order?.id,
+          pointsUsed: res?.order?.pointsUsed ?? res?.order?.point ?? 0,
+          pointsToEarn: res?.order?.pointsToEarn ?? 0,
+        };
+      }
+
+      if (orderData) {
+        navigation.navigate("AirtimeReviewOrder", { data: orderData });
+      } 
+        else{
+             toast.show(res?.message || res?.data?.message, {
+          type: "warning",
         });
+        }
       } else {
         toast.show(res?.message || res?.data?.message, {
           type: "warning",
         });
       }
     } catch (error) {
-      console.log(error);
       toast.show(error?.message || error?.data?.message, {
         type: "warning",
       });

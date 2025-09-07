@@ -29,7 +29,6 @@ const ReviewOrder = ({ navigation, route }) => {
   const handlePurchase = async () => {
     try {
       const res = await purchaseAirtime({ token, id }).unwrap();
-      console.log(res);
       if (res?.success) {
         navigation.replace("AirtimeCheckout", {
           data: res?.data,

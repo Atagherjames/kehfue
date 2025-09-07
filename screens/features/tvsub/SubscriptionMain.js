@@ -238,7 +238,7 @@ const SubscriptionMain = ({ navigation, route }) => {
               }}
             >
               <AppDefaultInput
-                label={`${selectedProvider?.name} Smart Card Number`}
+              label={selectedProvider?.name ? `${selectedProvider.name} Smart Card Number` : 'Smart Card Number'}
                 value={cableNo}
                 onChangeText={(val) => {
                   setCableNo(val);

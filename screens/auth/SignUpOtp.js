@@ -45,7 +45,7 @@ const SignUpOtp = ({ route }) => {
 
             if (result.success) {
                 setSuccess(true);
-                setAccessToken(token);
+             navigation.navigate("Login")
         
             } else {
                 Alert.alert("OTP Failed", result.message || "Invalid OTP");

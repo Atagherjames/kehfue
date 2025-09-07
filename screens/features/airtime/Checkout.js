@@ -47,7 +47,6 @@ const Checkout = ({ route, navigation }) => {
   const handleCheckout = async () => {
     try {
       const res = await checkout({ token, id: data?.orderId }).unwrap();
-      console.log(res);
       if (res?.success) {
         setUrl(res?.paymentInfo?.redirect_url);
         setRef(res?.paymentInfo?.txRef);

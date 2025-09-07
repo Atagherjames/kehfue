@@ -31,8 +31,11 @@ const Cart = () => {
   const [token, _] = useRecoilState(AccessToken);
   const [userData, __] = useRecoilState(UserData);
   const [activeType, setActiveType] = useState(0);
-  let n;
-  const [input, setInput] = useState("");
+
+  // Using let for input and deliveryLocation as per your request.
+  let input = "";
+  let deliveryLocation = "";
+
   const { data, isLoading, isError, refetch } = useGetCartItemQuery({ token });
   const [addItem, { isLoading: isAddingItem }] = useAddToCartMutation();
   const [removeItem, { isLoading: isRemovingItem }] =
@@ -104,13 +107,24 @@ const Cart = () => {
   };
 
   const handleConfirmOrder = async () => {
+    console.log("Confirming order with address:", deliveryLocation);
     const body = {
       cartIds: cartData.map((item) => item.id),
       paymentMethod: "card",
+      deliveryLocation: {
+        address: deliveryLocation,
+        state: "Lagos",
+        country: "Nigeria"
+      },
     };
 
     const pointBody = {
       cartIds: cartData.map((item) => item.id),
+      deliveryLocation: {
+        address: deliveryLocation,
+        state: "Lagos",
+        country: "Nigeria"
+      },
       paymentMethod: "card_and_points",
       point: input ? parseInt(input) : 0,
     };
@@ -376,7 +390,6 @@ const Cart = () => {
                       Enter the amount of points and/or cash you to use for the
                       total price
                     </Text>
-
                     <View
                       style={{
                         flexDirection: "row",
@@ -386,9 +399,10 @@ const Cart = () => {
                     >
                       <AppDefaultInput
                         keyboardType="numeric"
-                        onChangeText={(val) => (n = val)}
-                        onEndEditing={() => setInput(n)}
-                        defaultValue={input}
+                        // The value prop is not tied to state, so it won't re-render
+                        onChangeText={(text) => {
+                          input = text;
+                        }}
                         placeholder={"0"}
                       />
                       <Text
@@ -397,13 +411,13 @@ const Cart = () => {
                           fontSize: 14,
                         }}
                       >
-                        Points + {totalAmount - parseInt(input * 10)}
+                        Points +{" "}
+                        {totalAmount - (input ? parseInt(input) * 10 : 0)}
                       </Text>
                     </View>
                   </View>
                 )}
 
-                {/* Cart Summary */}
                 <View style={{ paddingVertical: 16 }}>
                   <Text
                     style={{
@@ -414,7 +428,6 @@ const Cart = () => {
                   >
                     Cart Summary
                   </Text>
-
                   <View>
                     {cartData.map((item, i) => (
                       <View
@@ -484,6 +497,15 @@ const Cart = () => {
                   </View>
                 </View>
 
+                <AppDefaultInput
+                  keyboardType="text"
+                  // Value is not tied to state
+                  onChangeText={(text) => {
+                    deliveryLocation = text;
+                  }}
+                  placeholder={"Delivery Address"}
+                />
+
                 <AppButton
                   btnText={"Confirm Order"}
                   btnStyles={{ marginVertical: 20 }}
@@ -516,7 +538,6 @@ const Cart = () => {
                 My Cart
               </Text>
             </View>
-
             <Text
               style={{
                 fontSize: 18,

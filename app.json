@@ -43,12 +43,12 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "89503e4f-082c-4a67-91bd-a2435cad9e74"
+        "projectId": "ccbdacc0-da0f-4532-986e-a4ee11cfb0fd"
       }
     },
     "runtimeVersion": {
       "policy": "appVersion"
     },
-    "owner": "d_ifference"
+    "owner": "neuroscience"
   }
 }

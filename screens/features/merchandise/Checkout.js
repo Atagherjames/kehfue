@@ -198,7 +198,7 @@ const MerchandiseCheckout = ({ route, navigation }) => {
         setVisible={setShowModal}
         url={url}
         onBackPress={() => {
-          navigation.replace("PaymentProcessing", {
+          navigation.replace("Cart", {
             url,
           });
         }}
