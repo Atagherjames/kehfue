@@ -14,7 +14,6 @@ import { useRecoilState } from "recoil";
 import { PartnerAccessToken, UserData } from "../../recoil/UserData";
 import { useToast } from "react-native-toast-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { encryptPassword } from "../../utils/Utilities";
 
 const PartnerLogin = () => {
   const navigation = useNavigation();
@@ -41,12 +40,11 @@ const PartnerLogin = () => {
       Alert.alert("Please fill in all fields to continue");
       return;
     }
-     const encryptedPassword = encryptPassword(password)
     
     
         const payload = {
           email,
-          password: encryptedPassword,
+          password,
         };
 
 

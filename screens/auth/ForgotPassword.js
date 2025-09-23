@@ -29,7 +29,6 @@ const ForgotPassword = ({
 
         try {
             const forgetPasswordResult = await forgetPassword(payload).unwrap()
-            console.log(forgetPasswordResult)
             if (forgetPasswordResult.success) {
                 toast.show(forgetPasswordResult?.data?.message || forgetPasswordResult?.message, {
                     type: "success"

@@ -363,8 +363,8 @@ export const Offers = ({ offersData, navigation }) => {
             </ScrollView>
           ) : (
             <Swiper
-              style={{ height: 400 }}
-              showsButtons={false}
+              style={{ height: 500 }}
+              showsButtons={true}
               loop={false}
               autoplay={false}
               showsPagination={false}

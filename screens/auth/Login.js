@@ -18,7 +18,7 @@ import AppLoader from "../../components/AppLoader";
 import { useRecoilState } from "recoil";
 import { AccessToken, UserData } from "../../recoil/UserData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { encryptPassword } from "../../utils/Utilities";
+
 
 const Login = () => {
   const navigation = useNavigation();
@@ -51,13 +51,15 @@ const Login = () => {
       Alert.alert("Please fill in all fields to continue");
       return;
     }
-    const encryptedPassword = encryptPassword(password)
+    
 
 
     const payload = {
       email,
-      password: encryptedPassword,
+      password,
     };
+
+    console.log(payload)
     try {
       const loginResult = await loginUser(payload).unwrap();
       if (loginResult.success) {

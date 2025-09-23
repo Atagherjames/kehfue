@@ -5,7 +5,7 @@ const authSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getNotifications: builder.query({
       query: (token) => ({
-        url: "/notification",
+        url: "/notification?sortField=createdAt&sortOrder=DESC",
         headers: {
           authorization: `Bearer ${token}`,
         },

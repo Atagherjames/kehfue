@@ -7,6 +7,7 @@ import StoreFormStepOne from "../../../components/partners/StoreFormStepOne";
 import StoreFormStepTwo from "../../../components/partners/StoreFormStepTwo";
 import StoreFormStepThree from "../../../components/partners/StoreFormStepThree";
 import StoreFormStepFour from "../../../components/partners/StoreFormStepFour";
+import StoreFormStepReview from "../../../components/partners/StoreFormReview";
 import StoreFormStepFive from "../../../components/partners/StoreFormStepFive";
 import {
   useGetTeamMembersQuery,
@@ -18,7 +19,6 @@ import AppLoader from "../../../components/AppLoader";
 import { PartnerAccessToken } from "../../../recoil/UserData";
 import { useRecoilState } from "recoil";
 import { useToast } from "react-native-toast-notifications";
-
 import {
   ScrollView,
   Text,
@@ -80,7 +80,7 @@ const CreateStore = ({ navigation }) => {
         return true;
 
       case 2:
-        const docsValid = 
+        const docsValid =
           form.businessLogo &&
           form.businessBanner &&
           form.CAC_StatusReport &&
@@ -111,6 +111,10 @@ const CreateStore = ({ navigation }) => {
           return false;
         }
         return true;
+      
+      // No validation needed for the review step (currentStep === 5) as it only displays data.
+      case 5:
+        return true;
 
       default:
         return true;
@@ -119,10 +123,8 @@ const CreateStore = ({ navigation }) => {
 
   const convertToFormData = async (form) => {
     const data = new FormData();
-
     for (const key in form) {
       const value = form[key];
-
       if (key === "teamMembers") {
         if (value && value.length > 0) {
           const cleanedTeam = value.map(({ email, fullName, avatar }) => ({
@@ -152,30 +154,27 @@ const CreateStore = ({ navigation }) => {
         data.append(key, value);
       }
     }
-
     return data;
   };
 
   const handleNext = async () => {
     if (!validateStep()) return;
 
-    if (currentStep === 4) {
+    if (currentStep === 5) {
       try {
         const formData = await convertToFormData(form);
         await createStore({ token, body: formData }).unwrap();
         setCompletedStep(5);
-        setCurrentStep(5);
+        setCurrentStep(6);
         scrollToTop();
       } catch (err) {
         console.log(err);
-
         let errMsg = "Failed to create store.";
         if (err.data && typeof err.data === "object" && err.data.message) {
           errMsg = err.data.message;
         } else if (err.message) {
           errMsg = err.message;
         }
-
         toast.show(errMsg, { type: "danger" });
       }
     } else {
@@ -192,12 +191,42 @@ const CreateStore = ({ navigation }) => {
     setTimeout(scrollToTop, 0);
   };
 
+  const renderStep = () => {
+    switch (currentStep) {
+      case 1:
+        return <StoreFormStepOne preset={presetData?.data} />;
+      case 2:
+        return <StoreFormStepTwo />;
+      case 3:
+        return (
+          <StoreFormStepThree
+            teamMembers={
+              teamMembersData?.record?.data?.map((member) => ({
+                id: member.id,
+                fullName: `${member.firstName} ${member.lastName}`,
+                email: member.email,
+                role: member.department || "Team Member",
+                avatar: member.profilePicture?.downloadUrl || null,
+              })) || []
+            }
+            navigation={navigation}
+          />
+        );
+      case 4:
+        return <StoreFormStepFour preset={presetData?.data} />;
+      case 5:
+        return <StoreFormStepReview />;
+      case 6:
+        return <StoreFormStepFive onDashboard={() => navigation.replace("PartnerDashboard")} />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.storeBg }}>
       <CustomDrawer />
-
-      {(isLoading || (isCreating && currentStep === 4)) && <AppLoader />}
-
+      {(isLoading || isCreating) && <AppLoader />}
       <ScrollView
         ref={scrollRef}
         style={styles.container}
@@ -205,57 +234,34 @@ const CreateStore = ({ navigation }) => {
       >
         <Text style={styles.title}>Setup Your Store</Text>
         <Text style={styles.subtitle}>
-          Setup your Khefue store in 5 easy steps and start selling right from
-          your dashboard
+          Setup your Khefue store in 5 easy steps and start selling right from your dashboard
         </Text>
-
         <View style={styles.card}>
           <StepIndicator
             currentStep={currentStep}
             completedStep={completedStep}
+            totalSteps={5}
           />
           <View style={styles.separator} />
-          {currentStep === 1 && <StoreFormStepOne preset={presetData?.data} />}
-          {currentStep === 2 && <StoreFormStepTwo />}
-          {currentStep === 3 && (
-            <StoreFormStepThree
-              teamMembers={
-                teamMembersData?.record?.data?.map((member) => ({
-                  id: member.id,
-                  fullName: `${member.firstName} ${member.lastName}`,
-                  email: member.email,
-                  role: member.department || "Team Member",
-                  avatar: member.profilePicture?.downloadUrl || null,
-                })) || []
-              }
-              navigation={navigation}
-            />
-          )}
-          {currentStep === 4 && <StoreFormStepFour preset={presetData?.data} />}
-          {currentStep === 5 && (
-            <StoreFormStepFive
-              onDashboard={() => navigation.replace("PartnerDashboard")}
-            />
-          )}
-
-          <View style={styles.navButtons}>
-            {currentStep > 1 && currentStep !== 5 && (
-              <TouchableOpacity style={styles.prevButton} onPress={handlePrev}>
-                <Text style={styles.prevButtonText}>Prev</Text>
-              </TouchableOpacity>
-            )}
-            {currentStep < 5 && (
+          {renderStep()}
+          {currentStep <= 5 && (
+            <View style={styles.navButtons}>
+              {currentStep > 1 && (
+                <TouchableOpacity style={styles.prevButton} onPress={handlePrev}>
+                  <Text style={styles.prevButtonText}>Prev</Text>
+                </TouchableOpacity>
+              )}
               <TouchableOpacity
                 style={styles.nextButton}
                 onPress={handleNext}
                 disabled={isCreating}
               >
                 <Text style={styles.nextButtonText}>
-                  {currentStep === 4 ? "Create Store" : "Next"}
+                  {currentStep === 5 ? "Create Store" : "Next"}
                 </Text>
               </TouchableOpacity>
-            )}
-          </View>
+            </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -182,6 +182,12 @@ const CustomDrawer = () => {
                   },
                   disabled: false,
                 },
+
+                  {
+                  text: "Stores",
+                  onPress: () => handleNavigation("PartnerStores"),
+                  disabled: !hasStore,
+                },
               ].map((item, i) => (
                 <TouchableOpacity
                   key={i}

@@ -17,20 +17,22 @@ const StoreFormStepOne = ({ preset }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const categoryOptions = [
+    // Add your category options here
   ];
 
   const readOnlyFields = {
     websiteURL: preset?.websiteURL ?? null,
-    description: preset?.description ?? null,
+    // Note: 'description' is no longer in this object, making it always editable
     category: preset?.sector ?? null,
   };
 
- 
+  
   useEffect(() => {
     if (preset) {
       setForm((oldForm) => ({
         ...oldForm,
         ...(preset.websiteURL ? { websiteURL: preset.websiteURL } : {}),
+        // This is the correct way to set the initial value from the preset
         ...(preset.description ? { description: preset.description } : {}),
         ...(preset.sector ? { category: preset.sector } : {}),
       }));
@@ -135,14 +137,13 @@ const StoreFormStepOne = ({ preset }) => {
         style={[
           styles.input,
           styles.textarea,
-          readOnlyFields.description && { backgroundColor: "#fafafa" },
         ]}
         multiline
         value={form.description}
-        onChangeText={(text) => handleInputChange("description", text)}
+        onChangeText={(text) => setForm({ ...form, description: text })}
         placeholder="Write Project Description"
         placeholderTextColor="#8094AE"
-        editable={!readOnlyFields.description}
+        editable={true}
       />
 
       {/* Business Registration Type (always editable) */}

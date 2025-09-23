@@ -12,7 +12,7 @@ import { useUserRegisterMutation } from '../../services/routes/authRoute';
 import AppLoader from '../../components/AppLoader';
 import { useRecoilState } from 'recoil';
 import { UserData } from '../../recoil/UserData';
-import { encryptPassword } from '../../utils/Utilities';
+
 
 const Login = () => {
     const navigation = useNavigation();
@@ -41,8 +41,6 @@ const Login = () => {
             return;
         }
 
-         const encryptedPassword = encryptPassword(password)
-        
         
           
 
@@ -50,7 +48,7 @@ const Login = () => {
             firstName,
             lastName,
             email,
-            password: encryptedPassword,
+            password,
             acceptTermsAndConditions,
             privacy: true
         };

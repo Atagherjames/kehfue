@@ -27,6 +27,8 @@ import CreateStore from "../screens/partner/store/CreateStore";
 import PartnerOrders from "../screens/partner/store/Orders";
 import CampaignPreview from "../screens/partner/CampaignPreview";
 import TeamMembers from "../screens/newPartners/TeamMembers";
+import PartnerStores from "../screens/partner/store/PatnerStores";
+import StoreDetailsScreen from "../screens/partner/store/PatnerStoreDetails";
 
 const Stack = createNativeStackNavigator();
 
@@ -66,7 +68,11 @@ export default function NewPartnersDrawer() {
       <Stack.Screen name="CreateStore" component={CreateStore} />
        <Stack.Screen name="TeamMembers" component={TeamMembers} />
       <Stack.Screen name="PartnerOrders" component={PartnerOrders} />
+            <Stack.Screen name="PartnerStores" component={PartnerStores} />
+                        <Stack.Screen name="StoreDetailsScreen " component={StoreDetailsScreen } />
     </Stack.Navigator>
+
+
   );
 }
 
