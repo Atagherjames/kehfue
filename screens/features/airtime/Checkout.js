@@ -16,6 +16,7 @@ import VTUVpayModal from "../../../components/VTUVpayModal";
 
 const ListItem = ({ text, value }) => (
   <Text
+  
     style={{
       fontSize: 16,
       fontFamily: "Medium",

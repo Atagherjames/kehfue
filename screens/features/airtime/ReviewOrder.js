@@ -24,9 +24,11 @@ const ReviewOrder = ({ navigation, route }) => {
     id,
     pointsUsed,
     pointsToEarn,
+    paymentMethod
   } = data;
 
   const handlePurchase = async () => {
+    console.log(id)
     try {
       const res = await purchaseAirtime({ token, id }).unwrap();
       if (res?.success) {
@@ -299,36 +301,40 @@ const ReviewOrder = ({ navigation, route }) => {
             </Text>
           </View>
 
-          <Text
-            style={{
-              fontSize: 16,
-              color: Colors.black,
-              fontFamily: "Medium",
-              marginVertical: 20,
-            }}
-          >
-            Credit/Debit (ATM) Cards | Visa QR | Other Banks Transfers
-          </Text>
+{paymentMethod !== "points" && (
+  <>
+    <Text
+      style={{
+        fontSize: 16,
+        color: Colors.black,
+        fontFamily: "Medium",
+        marginVertical: 20,
+      }}
+    >
+      Credit/Debit (ATM) Cards | Visa QR | Other Banks Transfers
+    </Text>
 
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <AppButton
-              btnText={"Place Order"}
-              onPress={() => {
-                // navigation.navigate("AirtimeCheckout")
-                handlePurchase();
-              }}
-            />
-            <AppButton
-              btnText={"Change Details"}
-              onPress={() => navigation.pop()}
-            />
-          </View>
-        </ScrollView>
+    <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+      }}
+    >
+      <AppButton
+        btnText={"Place Order"}
+        onPress={() => {
+          // navigation.navigate("AirtimeCheckout")
+          handlePurchase();
+        }}
+      />
+      <AppButton
+        btnText={"Change Details"}
+        onPress={() => navigation.pop()}
+      />
+    </View>
+  </>
+)}
+  </ScrollView>
       </View>
     </SafeAreaView>
   );

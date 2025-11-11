@@ -9,22 +9,25 @@ import {
 import { useRecoilState } from "recoil";
 import { AccessToken } from "../../../recoil/UserData";
 import { useToast } from "react-native-toast-notifications";
-import { ActivityIndicator, FlatList, Image, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Image, Text, View, TouchableOpacity } from "react-native";
+import { useRoute } from "@react-navigation/native";
 import AppButton from "../../../components/AppButton";
 import AppLoader from "../../../components/AppLoader";
 import BackButton from "../../../components/BackButton";
 
 const Merchandise = ({ navigation }) => {
   const [token, _] = useRecoilState(AccessToken);
-  // console.log(token)
+   const route = useRoute();
+     const { title } = route.params || {};
+
   const toast = useToast();
   const { data, isError, isLoading, isSuccess, refetch, error } =
     useGetProductsQuery(token);
   const [addItem, { isLoading: isAddingItem }] = useAddToCartMutation();
 
+
   useEffect(() => {
     if (isError && !isLoading) {
-      console.log(error);
       toast.show(
         error?.data?.message || error?.message || "Something went wrong",
         {
@@ -38,12 +41,11 @@ const Merchandise = ({ navigation }) => {
     }
   }, [isError]);
   const merchandise = data?.products?.data || [];
+  
 
   const addToCart = async (id) => {
-    console.log(id);
     try {
       const addRes = await addItem({ token, id }).unwrap();
-      console.log(addRes);
       if (addRes.success) {
         toast.show(addRes?.message || "Product added successfully", {
           type: "success",
@@ -66,7 +68,6 @@ const Merchandise = ({ navigation }) => {
       );
     }
   };
-  // console.log(merchandise)
 
   return (
     <SafeAreaView
@@ -89,7 +90,7 @@ const Merchandise = ({ navigation }) => {
             flex: 1,
           }}
         >
-          Shop Merchandise
+         {title || "Shop Merchandise"}
         </Text>
       </View>
       {isLoading && <ActivityIndicator />}
@@ -102,62 +103,71 @@ const Merchandise = ({ navigation }) => {
         <FlatList
           data={merchandise}
           renderItem={({ item, index }) => (
-            <View
-              style={{
-                marginBottom: 30,
-                alignItems: "center",
-                paddingHorizontal: 20,
-                gap: 16,
-              }}
-            >
-              <Image
-                source={{ uri: item?.thumbNail?.downloadUrl }}
-                style={{
-                  width: "100%",
-                  height: 200,
-                  borderRadius: 10,
-                }}
-              />
-              <View
-                style={{
-                  width: "100%",
-                  gap: 8,
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: "Bold",
-                    fontSize: 18,
-                    color: "#545454",
-                  }}
-                >
-                  {item.name}
-                </Text>
-                <Text
-                  style={{
-                    fontFamily: "Regular",
-                    fontSize: 14,
-                    color: "#545454",
-                  }}
-                >
-                  {item.description}
-                </Text>
-                <Text
-                  style={{
-                    fontFamily: "Medium",
-                    fontSize: 18,
-                    color: Colors.primary,
-                  }}
-                >
-                  {item?.currency?.toUpperCase() + " " + item?.price}
-                </Text>
+            <TouchableOpacity
+  onPress={() => navigation.navigate("ProductDetails", {token, id: item.id })}
+  activeOpacity={0.9}
+>
+  <View
+    style={{
+      marginBottom: 30,
+      alignItems: "center",
+      paddingHorizontal: 20,
+      gap: 16,
+    }}
+  >
+    <Image
+      source={{ uri: item?.thumbNail?.downloadUrl }}
+      style={{
+        width: "100%",
+        height: 200,
+        borderRadius: 10,
+      }}
+    />
+    <View
+      style={{
+        width: "100%",
+        gap: 8,
+      }}
+    >
+      <Text
+        style={{
+          fontFamily: "Bold",
+          fontSize: 18,
+          color: "#545454",
+        }}
+      >
+        {item.name}
+      </Text>
+      <Text
+        style={{
+          fontFamily: "Regular",
+          fontSize: 14,
+          color: "#545454",
+        }}
+      >
+        {item.description}
+      </Text>
+      <Text
+        style={{
+          fontFamily: "Medium",
+          fontSize: 18,
+          color: Colors.primary,
+        }}
+      >
+        {item?.currency?.toUpperCase() + " " + item?.price}
+      </Text>
 
-                <AppButton
-                  btnText={"Redeem Now"}
-                  onPress={() => addToCart(item.id)}
-                />
-              </View>
-            </View>
+      <AppButton
+        btnText={"Redeem Now"}
+        onPress={(e) => {
+          e.stopPropagation(); 
+          addToCart(item.id);
+        }}
+      />
+    </View>
+  </View>
+</TouchableOpacity>
+
           )}
         />
       </View>

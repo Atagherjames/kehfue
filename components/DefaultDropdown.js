@@ -4,7 +4,7 @@ import {
   TouchableOpacity,
   View,
   Dimensions,
-  ScrollView,
+FlatList
 } from "react-native";
 import AppModal from "./AppModal";
 import { Entypo } from "@expo/vector-icons";
@@ -75,29 +75,35 @@ const DefaultDropdown = ({
             borderRadius: 12,
           }}
         >
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {data.map((item, i) => (
-              <TouchableOpacity
-                onPress={() => {
-                  setShowModal(false);
-                  setValue(item);
-                }}
-                style={{
-                  paddingVertical: 10,
-                }}
-                key={i}
-              >
-                <Text
-                  style={{
-                    fontFamily: "Medium",
-                    fontSize: 16,
-                  }}
-                >
-                  {item.name || item}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+          <FlatList
+  data={data}
+keyExtractor={(item, i) =>
+  (item.code ? item.code : '') +
+  (item.name ? '_' + item.name : '') +
+  '_' + i
+}
+
+  renderItem={({ item }) => (
+    <TouchableOpacity
+      onPress={() => {
+        setShowModal(false);
+        setValue(item);
+      }}
+      style={{ paddingVertical: 10 }}
+    >
+      <Text style={{ fontFamily: "Medium", fontSize: 16 }}>
+        {item.name || item}
+      </Text>
+    </TouchableOpacity>
+  )}
+  initialNumToRender={12}
+  getItemLayout={(_, index) => ({
+    length: 40,
+    offset: 40 * index,
+    index,
+  })}
+  showsVerticalScrollIndicator={false}
+/>
         </View>
       </AppModal>
     </View>

@@ -19,7 +19,7 @@ import ChangePassword from "../screens/auth/ChangePassword";
 import Card from "../screens/home/Card";
 import Offer from "../screens/home/Offer";
 import Reward from "../screens/home/Reward";
-import TravelHome from "../screens/travel";
+// import TravelHome from "../screens/travel";
 import { useRecoilState } from "recoil";
 import LocationState from "../recoil/Location";
 import * as Location from "expo-location";
@@ -73,7 +73,7 @@ const OfferStack = () => {
       <Stack.Screen name="Notifications" component={Notifications} />
       <Stack.Screen name="BillPayment" component={BillPayment} />
 
-      <Stack.Screen name="TravelHome" component={TravelHome} />
+      {/* <Stack.Screen name="TravelHome" component={TravelHome} /> */}
       <Stack.Screen name="SelectDate" component={SelectDate} />
 
       <Stack.Screen name="TvSub" component={TvSub} />

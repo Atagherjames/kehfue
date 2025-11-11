@@ -14,7 +14,7 @@ const ReviewOrder = ({
   navigation,
   route
 }) => {
-  const {data} = route?.params
+  const {data, paymentMethod} = route?.params
   const [token, _] = useRecoilState(AccessToken)
   const [purchaseData, {isLoading, isError}] = usePlaceOrderMutation()
   const toast = useToast()
@@ -24,7 +24,6 @@ const ReviewOrder = ({
 
     try {
       const res = await purchaseData({token, id: data?.id}).unwrap()
-      console.log(res)
       if (res?.success) {
         navigation.navigate("AirtimeCheckout", {
           data: res?.data
@@ -35,7 +34,6 @@ const ReviewOrder = ({
         })
       }
     } catch (error) {
-      console.log(error)
         toast.show(error?.message || error?.data?.message, {
           type: "warning"
         })
@@ -265,6 +263,8 @@ const ReviewOrder = ({
             >₦{data?.total}.00</Text>
           </View>
 
+{paymentMethod !== "points" && (
+  <>
           <Text
             style={{
               fontSize: 16,
@@ -290,6 +290,7 @@ const ReviewOrder = ({
               onPress={() => navigation.pop()}
             />
           </View>
+          </>)}
         </ScrollView>
       </View>
     </SafeAreaView>

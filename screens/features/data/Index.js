@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
-import { ScrollView, Text, TouchableOpacity, View, FlatList } from "react-native";
+import {  Text, TouchableOpacity, View, FlatList } from "react-native";
 import { useRecoilState } from "recoil";
 import { AccessToken, UserData } from "../../../recoil/UserData";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -45,11 +45,9 @@ const Data = ({ navigation }) => {
 
   const handlePurchase = async () => {
     const result = await newPurchaseData({ token, number: phone });
-    console.log(result);
 
     if (result?.data?.success) {
       const plans = result.data.data.data;
-      console.log("this is the plan", plans);
       if (Array.isArray(plans)) {
         setFilteredPans(plans);
         const productId = plans[0]?.productId?.toLowerCase();
@@ -92,9 +90,8 @@ const Data = ({ navigation }) => {
 
     try {
       const res = await purchaseData({ token, body }).unwrap();
-      console.log(res)
       if (res?.success) {
-        navigation.navigate("DataReviewOrder", { data: res?.order });
+        navigation.navigate("DataReviewOrder", { data: res?.order,  paymentMethod });
       } else {
         toast.show(res?.message || res?.data?.message, { type: "warning" });
       }

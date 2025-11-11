@@ -44,7 +44,6 @@ const MerchandiseCheckout = ({ route, navigation }) => {
 
   const [token, _] = useRecoilState(AccessToken);
   const toast = useToast();
-  // console.log(token)
 
   const handleCheckout = async () => {
     const body = {
@@ -198,7 +197,7 @@ const MerchandiseCheckout = ({ route, navigation }) => {
         setVisible={setShowModal}
         url={url}
         onBackPress={() => {
-          navigation.replace("Cart", {
+          navigation.replace("CartScreen", {
             url,
           });
         }}

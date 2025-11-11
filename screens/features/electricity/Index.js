@@ -28,6 +28,7 @@ import ElectricityDropdownModal from "../../../components/ElectricityDropdownMod
 import AppHeader from "../../../components/AppHeader";
 
 const Electricity = ({ navigation }) => {
+
   const [showModal, setShowModal] = useState(false);
   const [verified, setVerified] = useState(false);
   const [selectedDisco, setSelectedDisco] = useState(null);
@@ -45,8 +46,8 @@ const Electricity = ({ navigation }) => {
     usePurchaseBillMutation();
   const [getBiller, { isLoading: isBillerLoading }] =
     useGetBillerPackageMutation();
-  const { data, isLoadingAccessToken, isGetDiscoLoading } =
-    useGetDiscoQuery(token);
+  const { data, isLoadingAccessToken, isGetDiscoLoading } = useGetDiscoQuery(token, { skip: !token });
+
   const [meterTypes, setMeterTypes] = useState([]);
   const [activeMeterType, setActiveMeterType] = useState("");
 
@@ -54,12 +55,11 @@ const Electricity = ({ navigation }) => {
 
   const handleGetBillers = async () => {
     const body = {
-      biller: "electricity", // electricity | cableTv
+      biller: "electricity", 
       itemId: selectedDisco?.id,
     };
     try {
       const response = await getBiller({ token, body }).unwrap();
-      //   console.log(response);
       if (response?.data?.success || response?.success) {
         setMeterTypes(response.data);
         toast.show(response?.message || response?.data?.message, {
@@ -80,42 +80,37 @@ const Electricity = ({ navigation }) => {
   }, [selectedDisco]);
 
   const handleVerifyMeterNo = async () => {
-    const body = {
-      biller: "electricity",
-      billerId: selectedDisco?.id,
-      amount: selectedDisco,
-      meter_type: activeMeterType,
-    };
-    try {
-      const res = await verifyMeterNo({ token, body }).unwrap();
-      if (res.success) {
-        setVerified(true);
-        setUsername(res?.data?.name);
-        toast.show(res?.message || res?.data?.message, {
-          type: "success",
-        });
-      } else {
-        toast.show(res?.message || res?.data?.message, {
-          type: "warning",
-        });
-      }
-    } catch (error) {
-      console.log(error);
-      if (error.status == 422) {
-        toast.show(error?.name || error?.data?.name, {
-          type: "warning",
-        });
-        return;
-      }
-      toast.show(error?.message || error?.data?.message, {
-        type: "warning",
-      });
-    }
+  if (!selectedDisco?.id || !activeMeterType || !meterNo) {
+    toast.show("Select a disco, meter type, and enter meter number", { type: "warning" });
+    return;
+  }
+
+  const body = {
+    biller: "electricity",
+    billerId: selectedDisco.id,
+    uniqueId: meterNo,
+    meterType: activeMeterType.itemName?.toUpperCase() || activeMeterType?.toUpperCase(),
   };
+
+
+  try {
+    const res = await verifyMeterNo({ token, body }).unwrap();
+    if (res.success) {
+      setVerified(true);
+      setUsername(res?.data?.name);
+      toast.show(res?.message || "Meter verified successfully", { type: "success" });
+    } else {
+      toast.show(res?.message || "Validation failed", { type: "warning" });
+    }
+  } catch (error) {
+    toast.show(error?.data?.message || "Failed to verify meter", { type: "danger" });
+  }
+};
+
 
   useEffect(() => {
     if (meterNo.length == 13) {
-      //   handleVerifyMeterNo();
+        handleVerifyMeterNo();
     }
   }, [meterNo]);
 
@@ -162,6 +157,12 @@ const Electricity = ({ navigation }) => {
           disco: selectedDisco,
           name: username,
           meterNo: meterNo,
+         paymentMethod:
+        activeType == 0
+          ? "points"
+          : activeType == 1
+          ? "card_and_points"
+          : "card",
         });
       } else {
         toast.show(res?.message || res?.data?.message, {
@@ -184,13 +185,6 @@ const Electricity = ({ navigation }) => {
       }}
     >
       {(isLoading || isPurchaseLoading || isGetDiscoLoading) && <AppLoader />}
-      {/* <View
-        style={{
-          padding: 20,
-        }}
-      >
-        <AppLogo width={140} />
-      </View> */}
       <AppHeader navigation={navigation} />
 
       <View
@@ -286,6 +280,7 @@ const Electricity = ({ navigation }) => {
                 keyboardType={"numeric"}
                 editable={selectedDisco ? true : false}
               />
+              
               {verified && (
                 <View
                   style={{

@@ -33,7 +33,7 @@ const Reward = () => {
         {
             image: <Travel width = {"100%"}/>,
             text: "Travel",
-            onPress: () => navigation.navigate("TravelHome")
+            onPress: () => navigation.navigate("Travel")
         },
         {
             image: <Merchandise width = {"100%"}/>,
@@ -56,7 +56,7 @@ const Reward = () => {
         {
             icon: require("../../assets/icons/travel-icon.png"),
             text: "Travel",
-            onPress: () =>  navigation.navigate("ComingSoon")
+            onPress: () =>  navigation.navigate("Travel")
         },
         {
             icon: require("../../assets/icons/merchandise-icon.png"),

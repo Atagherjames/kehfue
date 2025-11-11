@@ -13,6 +13,7 @@ const authSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["user"],
     }),
+
     getUserCard: builder.query({
       query: ({ token, id }) => ({
         url: `/loyalty/get/${id}`,
@@ -23,6 +24,7 @@ const authSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["user"],
     }),
+
     getQrCode: builder.query({
       query: (token) => ({
         url: `/loyalty/qr-code`,
@@ -33,7 +35,20 @@ const authSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["user"],
     }),
-    scanQrCode: builder.mutation({
+
+   pin: builder.mutation({
+  query: ({ token, pin }) => ({
+    url: "/loyalty/create-pin",
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+    body:{ "pin": pin },
+  }),
+  invalidatesTags: ["user"],
+}),
+
+scanQrCode: builder.mutation({
       query: ({ token, url }) => ({
         url: url,
         headers: {
@@ -43,6 +58,7 @@ const authSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["user"],
     }),
+
     getPartnersCustomer: builder.query({
       query: ({ token, page = 1, pageSize = 10 }) => ({
         url: `/stores/config?page=${page}&pageSize=${pageSize}`,
@@ -64,6 +80,7 @@ const authSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["user"],
     }),
+
     getPointsEarnedByCustomer: builder.query({
       query: (token) => ({
         url: "/partners/points-earned-by-partner-customers",
@@ -74,15 +91,60 @@ const authSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["user"],
     }),
+
+    getUserLocations: builder.query({
+      query: (token) => ({
+        url: "/customer/location",
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+        method: "GET",
+      }),
+      providesTags: ["location"],
+    }),
+
+  getDeliveryEstimate: builder.mutation({
+  query: ({ token, deliveryLocationId, deliveryLocation }) => {
+    const body = deliveryLocationId
+      ? { deliveryLocationId }
+      : { deliveryLocation };
+
+    return {
+      url: "/customer/delivery-estimate",
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    };
+  },
+  invalidatesTags: ["location"],
+}),
+
+    removeUserLocation: builder.mutation({
+      query: ({ token, locationId }) => ({
+        url: `/customer/location/${locationId}`,
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+        method: "PATCH",
+      }),
+      invalidatesTags: ["location"],
+    }),
   }),
 });
 
 export const {
   useGetNotificationsQuery,
   useGetUserCardQuery,
+  usePinMutation,
   useGetPartnersCustomerQuery,
   useGetPartnerSalePointsQuery,
   useGetPointsEarnedByCustomerQuery,
   useGetQrCodeQuery,
   useScanQrCodeMutation,
+  useGetUserLocationsQuery,
+  useGetDeliveryEstimateMutation,
+  useRemoveUserLocationMutation,
 } = authSlice;

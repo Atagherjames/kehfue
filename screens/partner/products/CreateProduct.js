@@ -91,7 +91,6 @@ const CreateProduct = ({ route }) => {
         navigation.replace("ProductDetails", { data: data?.product });
       } else {
         setLoading(false);
-        console.log("error uploading " + response);
         const error = JSON.parse(response.body);
         console.log(error.message);
         toast.show(
@@ -103,7 +102,6 @@ const CreateProduct = ({ route }) => {
       }
     } catch (error) {
       setLoading(false);
-      console.error(error);
       toast.show(error?.body?.message, {
         type: "warning",
       });

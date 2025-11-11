@@ -114,16 +114,16 @@ const authSlice = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
-    verfyMeterNo: builder.mutation({
-      query: ({token, body}) => ({
-        url: "/vtu/purchase-bill",
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-        method: "POST",
-        body
-      }),
-    }),
+   verfyMeterNo: builder.mutation({
+  query: ({ token, body }) => ({
+    url: "/vtu/verify",  
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+    method: "POST",
+    body
+  }),
+}),
     purchaseElectricity: builder.mutation({
       query: ({token, body}) => ({
         url: "/vtu/electricity-bill-purchase",
@@ -164,6 +164,28 @@ const authSlice = apiSlice.injectEndpoints({
       }),
     }),
 
+    initiateVpayPurchase: builder.mutation({
+  query: ({ token, body }) => ({
+    url: "/payment/initiate-vpay-purchase",
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+    method: "POST",
+    body,
+  }),
+}),
+
+getDataPlans: builder.query({
+  query: ({token, number}) => ({
+    url: `/vtu/data-plans/${number}`,
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+    method: "GET",
+  }),
+}),
+
+
   }),
 });
 
@@ -185,5 +207,6 @@ export const {
     useGetNewDataPlansMutation,
     useGetBillerPackageMutation,
     usePurchaseBillMutation,
-    useGetCableBillerQuery
+    useGetCableBillerQuery,
+    useInitiateVpayPurchaseMutation,
 } = authSlice;

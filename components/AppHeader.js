@@ -30,7 +30,7 @@ const AppHeader = ({ showMenu = true, showBackIcon }) => {
   const { data, isLoading, isError } = useGetCartItemQuery({
     token: accessToken,
   });
-  // console.log(data)
+
   const cartSize = data?.cart?.data?.length;
   const menuButtons = [
     {
@@ -127,7 +127,7 @@ const AppHeader = ({ showMenu = true, showBackIcon }) => {
               )}
               <AntDesign name="shoppingcart" size={24} color={Colors.primary} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("User")}>
+            <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
               <Image
                 source={
                   userData?.profilePicture

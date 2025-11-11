@@ -5,9 +5,8 @@ import AppHeader from "../../components/AppHeader";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import ProfileCircle from "../../assets/icons/profile-circle.svg";
 import CardBadge from "../../assets/icons/card-badge.svg";
-import FooterLogo from "../../assets/svg/footer-logo.svg";
-import QRCode from "react-native-qrcode-svg";
-import logo from "../../assets/images/applogo.png";
+import FooterLogo from "../../assets/svg/footer-logo.svg"
+import logowhite from "../../assets/icons/logowhite.png";
 import { useRecoilState } from "recoil";
 import { AccessToken, UserData } from "../../recoil/UserData";
 import { useGetQrCodeQuery, useGetUserCardQuery } from "../../services/routes/userRoutes";
@@ -103,6 +102,7 @@ const UserCard = () => {
                 backgroundColor: Colors.primary,
                 borderRadius: 14,
                 gap: 30,
+                marginBottom:10
               }}
             >
               <View
@@ -112,7 +112,7 @@ const UserCard = () => {
                   justifyContent: "space-between",
                 }}
               >
-                <FooterLogo width={100} />
+             <Image source={logowhite} style={{ width: 100, height: 50 }} resizeMode="contain" />
                 <CardBadge />
               </View>
 
@@ -156,7 +156,8 @@ const UserCard = () => {
                       color: Colors.white,
                     }}
                   >
-                    {userData.firstName} {userData.lastName}
+                  {userData.firstName.trim()} {userData.lastName.trim()}
+
                   </Text>
                   <Text
                     style={{

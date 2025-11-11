@@ -13,6 +13,17 @@ const authSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["product"],
     }),
+  getSingleProduct: builder.query({
+  query: ({ token, productId }) => ({
+    url: `/customer/product/${productId}`,
+    method: "GET",
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  }),
+  providesTags: ["product"],
+}),
+
     getCartItem: builder.query({
       query: ({ token }) => ({
         url: `/customer/cart`,
@@ -23,16 +34,18 @@ const authSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["product"],
     }),
-    addToCart: builder.mutation({
-      query: ({ token, id }) => ({
-        url: `/customer/cart/add/${id}`,
-        method: "PATCH",
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      }),
-      invalidatesTags: ["product"],
-    }),
+   addToCart: builder.mutation({
+  query: ({ token, id, quantity }) => ({
+    url: `/customer/cart/add/${id}?quantity=${quantity}`,
+    method: "PATCH",
+    headers: {
+      authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  }),
+  invalidatesTags: ["product"],
+}),
+
     removeFromCart: builder.mutation({
       query: ({ token, id }) => ({
         url: `/customer/cart/remove/${id}`,
@@ -70,6 +83,7 @@ const authSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetProductsQuery,
+  useGetSingleProductQuery,
   useGetCartItemQuery,
   useAddToCartMutation,
   useRemoveFromCartMutation,

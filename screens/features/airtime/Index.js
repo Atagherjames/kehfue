@@ -14,7 +14,6 @@ import { usePurchaseAirtimeMutation } from "../../../services/routes/vtuRoutes";
 import { useToast } from "react-native-toast-notifications";
 import AppLoader from "../../../components/AppLoader";
 import AppHeader from "../../../components/AppHeader";
-import BackButton from "../../../components/BackButton";
 import Header from "../../../components/Header";
 
 const Airtime = ({ navigation }) => {
@@ -76,7 +75,8 @@ let orderData = null;
           total: res?.transaction?.txnDetails?.amount,
           id: res?.transaction?.id,
           pointsUsed: res?.transaction?.txnDetails?.point,
-          pointsToEarn: res?.transaction?.pointEarned ?? 0, // fallback
+          pointsToEarn: res?.transaction?.pointEarned ?? 0,
+           paymentMethod: "points"
         };
       }
 
@@ -90,6 +90,7 @@ let orderData = null;
           id: res?.order?.id,
           pointsUsed: res?.order?.pointsUsed ?? res?.order?.point ?? 0,
           pointsToEarn: res?.order?.pointsToEarn ?? 0,
+           paymentMethod: "card",
         };
       }
 

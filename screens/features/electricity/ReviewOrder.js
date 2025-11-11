@@ -8,38 +8,45 @@ import { AccessToken } from '../../../recoil/UserData'
 import { usePlaceOrderMutation } from '../../../services/routes/vtuRoutes'
 import AppLoader from '../../../components/AppLoader'
 import { useToast } from 'react-native-toast-notifications'
-
+import BackButton from '../../../components/BackButton'
 const ElectricityReviewOrder = ({
   navigation,
   route
 }) => {
-  const {data, disco, name, meterNo} = route?.params
+  const {data, disco, name, meterNo,    paymentMethod} = route?.params
   const [token, _] = useRecoilState(AccessToken)
   const [purchaseData, {isLoading, isError}] = usePlaceOrderMutation()
   const toast = useToast()
 
-  const handlePurchase = async () => {
-
+   const handlePurchase = async () => {
     try {
       const res = await purchaseData({token, id: data?.id}).unwrap()
-      console.log(res)
-      if (res?.success) {
+      // Check envelope *and* real transaction status
+      const transactionFailed =
+        !res?.transaction ||
+        res?.transaction?.status === "failed" ||
+        res?.transaction?.success === false
+
+      if (!transactionFailed && res?.success) {
         navigation.replace("AirtimeCheckout", {
           data: res?.data
         })
       } else {
-        toast.show(res?.message || res?.data?.message, {
-          type: "warning"
-        })
+        toast.show(
+          res?.message ||
+          res?.transaction?.message ||
+          res?.data?.message ||
+          "Unable to process your transaction",
+          { type: "warning" }
+        )
       }
     } catch (error) {
-      console.log(error)
-        toast.show(error?.message || error?.data?.message, {
-          type: "warning"
-        })
+      toast.show(
+        error?.message || error?.data?.message || "Unable to process your transaction",
+        { type: "warning" }
+      )
     }
   }
-
   return (
     <SafeAreaView
       style={{
@@ -62,6 +69,7 @@ const ElectricityReviewOrder = ({
         }}
       >
         <ScrollView>
+           <BackButton />
           <Text
             style={{
               fontFamily: "Medium",
@@ -320,6 +328,8 @@ const ElectricityReviewOrder = ({
             >₦{data?.total}.00</Text>
           </View>
 
+{paymentMethod !== "points" && (
+  <>
           <Text
             style={{
               fontSize: 16,
@@ -345,6 +355,7 @@ const ElectricityReviewOrder = ({
               onPress={() => navigation.pop()}
             />
           </View>
+          </>)}
         </ScrollView>
       </View>
     </SafeAreaView>

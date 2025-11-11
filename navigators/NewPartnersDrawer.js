@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
-import CustomDrawer from "../components/CustomDrawer"; // Import your custom drawer
+import CustomDrawer from "../components/CustomDrawer"; 
 import { SafeAreaView } from "react-native-safe-area-context";
 import PartnerDashboard from "../screens/newPartners/Dashboard";
 import PartnerProfile from "../screens/newPartners/Profile";
@@ -85,3 +85,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+

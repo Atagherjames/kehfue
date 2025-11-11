@@ -15,6 +15,7 @@ import HowItWorksIcon3 from "../assets/svg/how-it-works-3.svg";
 import HowItWorksIcon4 from "../assets/svg/how-it-works-4.svg";
 import { convertTime } from "../utils/Utilities";
 import { useLoadOfferMutation } from "../services/routes/offersRoute";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useRecoilState } from "recoil";
 import { AccessToken } from "../recoil/UserData";
 import { useToast } from "react-native-toast-notifications";
@@ -369,6 +370,20 @@ export const Offers = ({ offersData, navigation }) => {
               autoplay={false}
               showsPagination={false}
               removeClippedSubviews={false}
+               nextButton={
+                  <MaterialIcons
+                    name="arrow-forward-ios"
+                    size={26}
+                    color={Colors.primary}
+                  />
+                }
+                prevButton={
+                  <MaterialIcons
+                    name="arrow-back-ios"
+                    size={26}
+                    color={Colors.primary}
+                  />
+                }
             >
               {offersData.map(renderOfferItem)}
             </Swiper>

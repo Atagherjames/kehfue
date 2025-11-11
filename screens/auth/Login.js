@@ -59,7 +59,6 @@ const Login = () => {
       password,
     };
 
-    console.log(payload)
     try {
       const loginResult = await loginUser(payload).unwrap();
       if (loginResult.success) {
